@@ -11,6 +11,9 @@ import mediapipe as mp
 from mediapipe.tasks.python import BaseOptions
 from mediapipe.tasks.python.vision import ImageEmbedder, ImageEmbedderOptions
 
+# Validation
+from validation import Validation as Val
+
 class ImageEmbedding:
 
     """
@@ -55,19 +58,13 @@ class ImageEmbedding:
         """
 
         # Check that IMAGE_FILENAMES is a list or tuple
-        if not isinstance(IMAGE_FILENAMES, (list, tuple)):
-            raise TypeError("IMAGE_FILENAMES must be a list or tuple.")
-        
-        # Check that exactly 2 image file paths are provided
-        if len(IMAGE_FILENAMES) != 2:
-            raise ValueError("Please provide exactly 2 image file paths.")
+        # and that it contains exactly 2 image file paths
+        Val.val_iter(IMAGE_FILENAMES, "IMAGE_FILENAMES")
         
         # Check that both paths exist and are images
         for image in IMAGE_FILENAMES:
-            if not os.path.exists(image):
-                raise FileNotFoundError(f"File {image} not found.")
-            if not image.endswith((".jpg", ".jpeg", ".png", ".webp")):
-                raise ValueError(f"File {image} is not an image file.")
+            Val.val_path(image)
+            Val.val_filetype(image, (".png", ".jpg", ".jpeg"))
         
         target_width = ImageEmbedding.target_width
         target_height = ImageEmbedding.target_height
@@ -132,19 +129,13 @@ class ImageEmbedding:
         """
 
         # Check that VIDEO_FILENAME is a list or tuple
-        if not isinstance(VIDEO_FILENAMES, (list, tuple)):
-            raise TypeError("VIDEO_FILENAMES must be a list or tuple.")
-
-        # Check that exactly 2 video file paths are provided
-        if len(VIDEO_FILENAMES) != 2:
-            raise ValueError("Please provide exactly 2 video file paths.")
+        # and that it contains exactly 2 video file paths
+        Val.val_iter(VIDEO_FILENAMES, "VIDEO_FILENAMES")
         
         # Check that both paths exist and are videos
         for video in VIDEO_FILENAMES:
-            if not os.path.exists(video):
-                raise FileNotFoundError(f"File {video} not found.")
-            if not video.endswith((".mp4", ".avi")):
-                raise ValueError(f"File {video} is not a video file.")
+            Val.val_path(video)
+            Val.val_filetype(video, (".mp4", ".avi"))
             
         # Prepare the plot for displaying the similarity for each frame
         fig = plt.figure()
