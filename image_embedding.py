@@ -47,7 +47,27 @@ class ImageEmbedding:
 
         Returns:
             None
+
+        Raises:
+            TypeError: If IMAGE_FILENAMES is not a list or tuple.
+            ValueError: If the number of image file paths is not 2.
+            FileNotFoundError: If an image file path does not exist.
         """
+
+        # Check that IMAGE_FILENAMES is a list or tuple
+        if not isinstance(IMAGE_FILENAMES, (list, tuple)):
+            raise TypeError("IMAGE_FILENAMES must be a list or tuple.")
+        
+        # Check that exactly 2 image file paths are provided
+        if len(IMAGE_FILENAMES) != 2:
+            raise ValueError("Please provide exactly 2 image file paths.")
+        
+        # Check that both paths exist and are images
+        for image in IMAGE_FILENAMES:
+            if not os.path.exists(image):
+                raise FileNotFoundError(f"File {image} not found.")
+            if not image.endswith((".jpg", ".jpeg", ".png", ".webp")):
+                raise ValueError(f"File {image} is not an image file.")
         
         target_width = ImageEmbedding.target_width
         target_height = ImageEmbedding.target_height
@@ -104,6 +124,11 @@ class ImageEmbedding:
         
         Returns:
             None
+
+        Raises:
+            TypeError: If VIDEO_FILENAMES is not a list or tuple.
+            ValueError: If the number of video file paths is not 2.
+            FileNotFoundError: If a video file path does not exist.
         """
 
         # Check that VIDEO_FILENAME is a list or tuple
@@ -230,3 +255,4 @@ class ImageEmbedding:
                 writer.write(frame)
             writer.release()
         cv2.destroyAllWindows()
+        plt.close()
