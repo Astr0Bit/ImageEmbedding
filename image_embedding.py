@@ -17,9 +17,9 @@ class ImageEmbedding:
     Class for performing image embedding using Google's MediaPipe library.
     """
 
-    ROOT = os.path.dirname(os.path.abspath(__file__))
-    TARGET_WIDTH = 700
-    TARGET_HEIGHT = 600
+    root = os.path.dirname(os.path.abspath(__file__))
+    target_width = 700
+    target_height = 600
 
     def __init__(self, l2_normalize: bool = True, 
                  quantize: bool = True) -> None:
@@ -32,7 +32,7 @@ class ImageEmbedding:
             None
         """
         self.model_path = os.path.join(
-            ImageEmbedding.ROOT, "mobilenet_v3_large_075_224_embedder.tflite")
+            ImageEmbedding.root, "mobilenet_v3_large_075_224_embedder.tflite")
         self.base_options = BaseOptions(model_asset_path=self.model_path)
         self.options = ImageEmbedderOptions(base_options=self.base_options,
                                             l2_normalize=l2_normalize,
@@ -49,8 +49,8 @@ class ImageEmbedding:
             None
         """
         
-        TARGET_WIDTH = ImageEmbedding.TARGET_WIDTH
-        TARGET_HEIGHT = ImageEmbedding.TARGET_HEIGHT
+        target_width = ImageEmbedding.target_width
+        target_height = ImageEmbedding.target_height
 
         # Create the image embedder
         with ImageEmbedder.create_from_options(self.options) as embedder:
@@ -65,9 +65,9 @@ class ImageEmbedding:
 
             # Resize the images
             first_resized = cv2.resize(first_image_mat, 
-                                      (TARGET_WIDTH, TARGET_HEIGHT))
+                                      (target_width, target_height))
             second_resized = cv2.resize(second_image_mat, 
-                                      (TARGET_WIDTH, TARGET_HEIGHT))
+                                      (target_width, target_height))
 
             first_embedding_result = embedder.embed(first_image)
             second_embedding_result = embedder.embed(second_image)
@@ -81,7 +81,7 @@ class ImageEmbedding:
             side_by_side = cv2.hconcat([first_resized, second_resized])
 
             # Add similarity text to the frame
-            frame_center = (TARGET_WIDTH // 2 + 200, TARGET_HEIGHT - 50)
+            frame_center = (target_width // 2 + 200, target_height - 50)
 
             # Display the concatenated frames with text using matplotlib
             plt.imshow(cv2.cvtColor(side_by_side, cv2.COLOR_BGR2RGB))
@@ -149,8 +149,8 @@ class ImageEmbedding:
               f"New number of frames: {MIN_FRAMES}")
         VIDEO_FRAMES = [frames[:MIN_FRAMES] for frames in VIDEO_FRAMES]
 
-        TARGET_WIDTH = ImageEmbedding.TARGET_WIDTH
-        TARGET_HEIGHT = ImageEmbedding.TARGET_HEIGHT
+        target_width = ImageEmbedding.target_width
+        target_height = ImageEmbedding.target_height
 
         with ImageEmbedder.create_from_options(self.options) as embedder:
             for i in range(MIN_FRAMES):
@@ -159,9 +159,9 @@ class ImageEmbedding:
 
                 # Resize the frames to the target dimensions
                 vid1_frame_resized = cv2.resize(vid1_frame_mat, 
-                                               (TARGET_WIDTH, TARGET_HEIGHT))
+                                               (target_width, target_height))
                 vid2_frame_resized = cv2.resize(vid2_frame_mat, 
-                                               (TARGET_WIDTH, TARGET_HEIGHT))
+                                               (target_width, target_height))
                 
                 # get embeddings
                 vid1_frame = mp.Image(image_format=mp.ImageFormat.SRGB, 
@@ -194,7 +194,7 @@ class ImageEmbedding:
                 plot = cv2.cvtColor(plot, cv2.COLOR_RGBA2BGR) # Convert to BGR for OpenCV
 
                 # Resize the plot to the target dimensions
-                plot_resized = cv2.resize(plot, (TARGET_WIDTH * 2, TARGET_HEIGHT))
+                plot_resized = cv2.resize(plot, (target_width * 2, target_height))
                                 
                 # TODO: Display the frames side by side using OpenCV
                 side_by_side = cv2.hconcat([vid1_frame_resized, 
@@ -203,7 +203,7 @@ class ImageEmbedding:
                 side_by_side_plot = cv2.vconcat([side_by_side, plot_resized])
 
                 # Add similarity text to the frame
-                frame_center = (TARGET_WIDTH // 2 + 200, TARGET_HEIGHT - 50)
+                frame_center = (target_width // 2 + 200, target_height - 50)
                 cv2.putText(
                     side_by_side_plot,
                     f"Similarity: {similarity:.2f}",
@@ -224,7 +224,7 @@ class ImageEmbedding:
             writer = cv2.VideoWriter(
                 f"{output_file_name}.mp4",
                 cv2.VideoWriter_fourcc(*"VIDX"),
-                30, (TARGET_WIDTH*2, TARGET_HEIGHT*2))
+                30, (target_width*2, target_height*2))
             
             for frame in side_by_side_frames:
                 writer.write(frame)

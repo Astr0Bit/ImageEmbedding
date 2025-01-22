@@ -1,6 +1,6 @@
 ## Image Embedding Class
 
-Class for performing embedding on images using Google's MediaPipe library.
+Class for performing embedding on images using Google's MediaPipe library (Apache 2.0 License).
 This class' purpose is to calculate similarity between 2 images or video frames,
 using Google's MediaPipe library. It works by embedding the images so they
 are represented as a "grouped" array (similar to clustering), and then comparing
